@@ -1,0 +1,23 @@
+@import '../Global.scss';
+.header-container{
+    background-color: $secondary-color;
+    height: 40px;
+    .nav-left{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        .logo{
+            height: 40px;
+            width: 50px;
+        }
+        a{
+            color: $text-color;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: $main-border;
+            &:hover{
+                background-color: $secondary-color;
+            }
+        }
+    }
+}

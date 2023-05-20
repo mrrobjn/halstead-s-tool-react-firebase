@@ -1,0 +1,22 @@
+@import "../Global.scss";
+.homepage-container {
+  background-color: $main-color;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .logo {
+    margin-bottom: 10px;
+    h1 {
+      color: $text-color;
+    }
+  }
+  .author-name {
+    display: flex;
+    p {
+      color: $text-color;
+      margin: 0 10px;
+    }
+  }
+}
