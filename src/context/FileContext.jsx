@@ -47,6 +47,7 @@ export const FileProvider = ({ children }) => {
       console.error(error.message);
     }
   };
+  
   return (
     <FileContext.Provider
       value={{

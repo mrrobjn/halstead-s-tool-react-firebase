@@ -1,0 +1,21 @@
+@import "../Global.scss";
+.result-container {
+  flex: 1;
+  height: calc(100vh - 80px);
+  background-color: #fff;
+  overflow-y: scroll;
+  .table-container {
+    margin: auto;
+    padding: 20px;
+    table {
+      border: 1px solid $main-color;
+      border-collapse: collapse;
+      white-space: nowrap;
+      th,
+      td {
+        border: 1px solid $main-color;
+        padding: 5px;
+      }
+    }
+  }
+}

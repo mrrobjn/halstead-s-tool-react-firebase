@@ -1,121 +1,93 @@
 @import "../Global.scss";
 .file-content-container {
-  background-color: $secondary-color;
+  background-color: $main-color;
   flex: 1;
   display: flex;
-  .left-tab {
-    width: 50%;
-    height: 100%;
+  flex-direction: column;
+  .tab-bar {
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    background-color: $secondary-color;
-    .tab-bar {
-      background-color: $main-color;
-      height: 40px;
+    height: 40px;
+    background-color: $main-color;
+    .left-tab {
+      width: 80%;
       display: flex;
       overflow: hidden;
       .tab {
-        padding: 0 10px;
+        width: 200px;
+        overflow: hidden;
         display: flex;
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
         color: $text-color;
-        min-width: 160px;
+        padding: 0 10px;
         cursor: pointer;
+        transition: 0.4s;
         p {
           display: flex;
-          align-items: center;
-          font-size: 14px;
-          width: 100px;
-          overflow: hidden;
-          white-space: nowrap;
-          i{
-            margin-right: 10px;
+          i {
+            padding-right: 10px;
           }
         }
         button {
+          width: 20px;
+          height: 20px;
           border: none;
-          background: transparent;
+          background: none;
+          cursor: pointer;
+          color: $text-color;
+          border-radius: $main-border;
           display: flex;
           justify-content: center;
           align-items: center;
-          border-radius: $main-border;
-          transition: 0.4s;
-          i {
-            color: $text-color;
-          }
           &:hover {
-            cursor: pointer;
+            background-color: $secondary-color;
           }
         }
       }
       .active {
         background-color: $secondary-color;
         border-top: 1px solid $sub-color;
+        button {
+          &:hover {
+            background-color: $main-color;
+          }
+        }
       }
     }
-    .text-container {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      textarea {
-        outline-style: none;
-        width: 100%;
-        height: 100%;
-        resize: none;
-        border: none;
-        background-color: $secondary-color;
-        color: $text-color;
-        padding: 20px;
-        font-size: 14px;
-        font-weight: bold;
-        line-height: 30px;
-        white-space: nowrap;
-      }
-    }
-  }
-  .right-tab {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    .tab-bar {
-      background-color: $main-color;
-      height: 40px;
+    .right-tab {
+      width: 20%;
       display: flex;
       justify-content: right;
       align-items: center;
       button {
         height: 30px;
-        font-size: 16px;
-        color: $text-color;
-        background: transparent;
-        border: none;
-        border-radius: $main-border;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         margin-right: 10px;
-        padding: 5px 10px;
         transition: 0.4s;
+        background: none;
+        border: none;
+        color: $text-color;
+        border-radius: $main-border;
+        cursor: pointer;
         &:hover {
           background: $sub-color;
           color: #fff;
-          cursor: pointer;  
-          i {
-            color: #fff;
-          }
-        }
-        i {
-          transition: 0.4s;
         }
       }
     }
-    .result-container {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #fff;
+  }
+  .content-container {
+    display: flex;
+    flex: 1;
+    .text-container {
+      width: 700px;
+      height: calc(100vh - 80px);
+      display: flex;
+      pre{
+        code{
+          overflow: auto;
+        }
+      }
     }
   }
 }
