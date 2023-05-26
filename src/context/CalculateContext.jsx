@@ -6,8 +6,9 @@ export const CalculateProvider = ({ children }) => {
   const initialState = {
     distinctOperatorsWithoutQuote: [],
     totalOperatorsWithoutQuote: [],
-    stringGetter:[],
-    distinctOperandsWithoutString:[]
+    stringGetter: [],
+    distinctOperandsWithoutString: [],
+    totalOperandsWithoutString:[],
   };
   const [state, dispatch] = useReducer(ResultReducer, initialState);
   function tokenize(code) {
@@ -142,9 +143,11 @@ export const CalculateProvider = ({ children }) => {
       "error",
       "warning",
       "length",
+      "Math",
+      "abs",
     ];
     const quotation = ["'", '"'];
-    const removeIndex = [")", "]", "}"];
+    const removeIndex = [")", "]", "}", "\r", "\n", "\t"];
     const words = tokenize(text);
     // tinh operators
     const operatorsWithoutQuote = words.filter((w) => operators.includes(w));
@@ -165,8 +168,9 @@ export const CalculateProvider = ({ children }) => {
         !removeIndex.includes(w) &&
         !quotation.includes(w)
     ).length;
-    const distinctOperandsWithoutString =
-      [...new Set(totalOperandsWithoutString)];
+    const distinctOperandsWithoutString = [
+      ...new Set(totalOperandsWithoutString),
+    ];
     const distinctOperatorsWithoutQuote = [...new Set(operatorsWithoutQuote)];
     if (distinctOperatorsWithoutQuote && operatorsWithoutQuote) {
       dispatch({
@@ -176,10 +180,10 @@ export const CalculateProvider = ({ children }) => {
           totalOperatorsWithoutQuote: operatorsWithoutQuote,
           stringGetter,
           distinctOperandsWithoutString,
+          totalOperandsWithoutString,
         },
       });
     }
-    console.log()
   };
   return (
     <CalculateContext.Provider

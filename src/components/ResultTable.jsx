@@ -56,11 +56,15 @@ const ResultTable = () => {
                 ) : (
                   ""
                 )}
-                {state.distinctOperandsWithoutString.map((o,i)=>{
-                  return <tr key={i}>
-                    <td>{o}</td>
-                    <td>1</td>
-                  </tr>
+                {state.distinctOperandsWithoutString.map((o, i) => {
+                  const singleOperandLength =
+                    state.totalOperandsWithoutString.filter((a) => a === o);
+                  return (
+                    <tr key={i}>
+                      <td>{o}</td>
+                      <td>{singleOperandLength?.length}</td>
+                    </tr>
+                  );
                 })}
               </tbody>
             </table>
