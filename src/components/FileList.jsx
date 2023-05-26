@@ -27,7 +27,7 @@ const FileList = () => {
             type="file"
             id="file"
             name="file"
-            accept=".py, .js"
+            accept=".c++, .js"
             required
             onChange={(e) => setFile(e)}
           />
