@@ -8,7 +8,7 @@ export const CalculateProvider = ({ children }) => {
     totalOperatorsWithoutQuote: [],
     stringGetter: [],
     distinctOperandsWithoutString: [],
-    totalOperandsWithoutString:[],
+    totalOperandsWithoutString: [],
   };
   const [state, dispatch] = useReducer(ResultReducer, initialState);
   function tokenize(code) {
@@ -30,7 +30,8 @@ export const CalculateProvider = ({ children }) => {
         char === "]" ||
         char === ";" ||
         char === "," ||
-        char === "."
+        char === "." ||
+        char === "-"
       ) {
         if (currentToken.length > 0) {
           tokens.push(currentToken);
@@ -66,6 +67,7 @@ export const CalculateProvider = ({ children }) => {
     }
     return tokens;
   }
+  
   const fileCalculate = (text) => {
     const operators = [
       "if",
@@ -84,6 +86,7 @@ export const CalculateProvider = ({ children }) => {
       "const",
       "+",
       "++",
+      "+=",
       "-",
       "*",
       "/",
@@ -106,6 +109,7 @@ export const CalculateProvider = ({ children }) => {
       "?",
       ",",
       ";",
+      ":",
       "map",
       "find",
       "filter",
@@ -145,12 +149,85 @@ export const CalculateProvider = ({ children }) => {
       "length",
       "Math",
       "abs",
+      "acos",
+      "acosh",
+      "asin",
+      "asinh",
+      "atan",
+      "atan2",
+      "atanh",
+      "cbrt",
+      "ceil",
+      "clz32",
+      "cos",
+      "cosh",
+      "exp",
+      "expm1",
+      "floor",
+      "fround",
+      "hypot",
+      "imul",
+      "log",
+      "log1p",
+      "log10",
+      "log2",
+      "max",
+      "min",
+      "pow",
+      "random",
+      "round",
+      "sign",
+      "sin",
+      "sinh",
+      "sqrt",
+      "tan",
+      "tanh",
+      "trunc",
+      "toFixed",
+      "prompt",
+    ];
+    const mathMethods = [
+      "abs",
+      "acos",
+      "acosh",
+      "asin",
+      "asinh",
+      "atan",
+      "atan2",
+      "atanh",
+      "cbrt",
+      "ceil",
+      "clz32",
+      "cos",
+      "cosh",
+      "exp",
+      "expm1",
+      "floor",
+      "fround",
+      "hypot",
+      "imul",
+      "log",
+      "log1p",
+      "log10",
+      "log2",
+      "max",
+      "min",
+      "pow",
+      "random",
+      "round",
+      "sign",
+      "sin",
+      "sinh",
+      "sqrt",
+      "tan",
+      "tanh",
+      "trunc",
     ];
     const quotation = ["'", '"'];
     const removeIndex = [")", "]", "}", "\r", "\n", "\t"];
     const words = tokenize(text);
     // tinh operators
-    const operatorsWithoutQuote = words.filter((w) => operators.includes(w));
+    const operatorsWithoutQuote = words.filter((w) => operators.includes(w)||mathMethods.includes(w));
     // tinh operands
     const stringGetter = text
       .match(/"(.*?)"/g)
@@ -162,12 +239,6 @@ export const CalculateProvider = ({ children }) => {
         !stringGetter?.includes(w) &&
         !quotation.includes(w)
     );
-    const totalOperands = words.filter(
-      (w) =>
-        !operatorsWithoutQuote.includes(w) &&
-        !removeIndex.includes(w) &&
-        !quotation.includes(w)
-    ).length;
     const distinctOperandsWithoutString = [
       ...new Set(totalOperandsWithoutString),
     ];
