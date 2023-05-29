@@ -32,44 +32,109 @@ export const CalculateProvider = ({ children }) => {
         char === ";" ||
         char === "," ||
         char === "." ||
-        char === "-"
+        char === "-" ||
+        (char === "=" && code[i + 1] !== "=") || // modified this line to only check for a single "=" character
+        (char === "<" && code[i + 1] !== "<" && code[i + 1] !== "=") ||
+        (char === ">" && code[i + 1] !== ">") ||
+        char === "+" ||
+        char === "#" ||
+        (char === ":" && code[i + 1] !== ":")
       ) {
         if (currentToken.length > 0) {
           tokens.push(currentToken);
           currentToken = "";
         }
         tokens.push(char);
-      } else if (char === "+" && code[i + 1] === "+") {
-        if (currentToken.length > 0) {
-          tokens.push(currentToken);
-          currentToken = "";
+      } else if (
+         (char == "<" && code[i+1] == "<") || 
+         (char == ">" && code[i+1] == ">") || 
+         (char == ":" && code[i+1] == ":") || 
+         (char == "!" && code[i+1] == "=") || 
+         (char == "=" && code[i+1] == "=") || 
+         (char == "<" && code[i+1] == "=") || 
+         (char == ">" && code[i+1] == "=")
+       ) {
+         if(currentToken.length>0){
+           tokens.push(currentToken);
+           currentToken="";
+         }
+         tokens.push(char+code[i+1]);
+         i++;
+       } else if (char == "+" && code[i+1]=="+"){
+         if(currentToken.length>0){
+           tokens.push(currentToken);
+           currentToken="";
+         }
+         tokens.push("++");
+         i++;
+       }else if(char=='"'||char=="'"){
+         if(currentToken.length>0){
+           tokens.push(currentToken);
+           currentToken="";
+         }
+         tokens.push(char);
+         let endChar=i+1;
+         while(endChar<code.length&&code[endChar]!=char){
+           endChar++;
+         }
+         tokens.push(code.slice(i+1,endChar));
+         tokens.push(char);
+         i=endChar;
+       }else if(
+         currentToken.endsWith("#include")&&
+         char=="<"
+       ){
+         let endChar=i;
+         while(endChar<code.length&&code[endChar]!=">"){
+           endChar++;
+         }
+         currentToken+=code.slice(i,endChar+1);
+         i=endChar;
+       }else if(char=="/"&&code[i+1]=="/"){
+         if(currentToken.length>0){
+           tokens.push(currentToken);
+           currentToken="";
+         }
+         let endComment=i+2;
+         while(endComment<code.length&&code[endComment]!='\n'&&code[endComment]!='\r'){
+           endComment++;
+         }
+         tokens.push(code.slice(i,endComment));
+         i=endComment;
+       }else if(char=="\\"&&(code[i+1]=="n"||code[i+1]=="r"||code[i+1]=="t")){
+          currentToken+=char+code[i+1];
+          i++;
+       }else{
+         currentToken+=char;
+       }
+     }
+     if(currentToken.length>0){
+       tokens.push(currentToken);
+     }
+     return tokens;
+  }
+  // render comment in array
+  function getComments(code) {
+    const comments = [];
+    for (let i = 0; i < code.length; i++) {
+      const char = code[i];
+      if (char === "/" && code[i + 1] === "/") {
+        let endComment = i + 2;
+        while (
+          endComment < code.length &&
+          code[endComment] !== "\n" &&
+          code[endComment] !== "\r"
+        ) {
+          endComment++;
         }
-        tokens.push("++");
-        i++;
-      } else if (char === '"' || char === "'") {
-        if (currentToken.length > 0) {
-          tokens.push(currentToken);
-          currentToken = "";
-        }
-        tokens.push(char);
-        let endChar = i + 1;
-        while (endChar < code.length && code[endChar] !== char) {
-          endChar++;
-        }
-        tokens.push(code.slice(i + 1, endChar));
-        tokens.push(char);
-        i = endChar;
-      } else {
-        currentToken += char;
+        comments.push(code.slice(i, endComment));
+        i = endComment;
       }
     }
-    if (currentToken.length > 0) {
-      tokens.push(currentToken);
-    }
-    return tokens;
+    return comments;
   }
-
   const fileCalculate = (text, filename) => {
+    // calculate js
     if (filename.split(".").pop() === "js") {
       const operators = [
         "if",
@@ -181,14 +246,78 @@ export const CalculateProvider = ({ children }) => {
         "sign",
         "sin",
         "sinh",
-        "sqrt",
         "tan",
         "tanh",
         "trunc",
         "toFixed",
         "prompt",
       ];
-      const mathMethods = [
+      const keywords = [
+        "abstract",
+        "arguments",
+        "await",
+        "boolean",
+        "break",
+        "byte",
+        "case",
+        "catch",
+        "char",
+        "class",
+        "const",
+        "continue",
+        "debugger",
+        "default",
+        "delete",
+        "do",
+        "double",
+        "else",
+        "enum",
+        "eval",
+        "export",
+        "extends",
+        "false",
+        "final",
+        "finally",
+        "float",
+        "for",
+        "function",
+        "goto",
+        "if",
+        "implements",
+        "import",
+        "in",
+        "instanceof",
+        "int",
+        "interface",
+        "let",
+        "long",
+        "native",
+        "new",
+        "null",
+        "package",
+        "private",
+        "protected",
+        "public",
+        "return",
+        "short",
+        "static",
+        "super",
+        "switch",
+        "synchronized",
+        "this",
+        "throw",
+        "throws",
+        "transient",
+        "true",
+        "try",
+        "typeof",
+        "var",
+        "void",
+        "volatile",
+        "while",
+        "parseInt",
+      ];
+      const methods = [
         "abs",
         "acos",
         "acosh",
@@ -224,15 +353,30 @@ export const CalculateProvider = ({ children }) => {
         "tan",
         "tanh",
         "trunc",
+        "document",
+        "querySelector",
+        "querySelectorAll",
+        "addEventListener",
+        "getElementById",
+        "getElementsByTagName",
+        "getElementsByClassName",
+        "createElement",
+        "removeChild",
+        "appendChild",
+        "replaceChild",
+        "write",
+        "writeln",
       ];
       const quotation = ["'", '"'];
       const removeIndex = [")", "]", "}", "\r", "\n", "\t"];
       const words = tokenize(text);
       // tinh operators
       const operatorsWithoutQuote = words.filter(
-        (w) => operators.includes(w) || mathMethods.includes(w)
+        (w) =>
+          operators.includes(w) || methods.includes(w) || keywords.includes(w)
       );
       // tinh operands
+      const comments = getComments(text);
       const stringGetter = text
         .match(/"(.*?)"/g)
         ?.map((match) => match.slice(1, -1));
@@ -241,7 +385,8 @@ export const CalculateProvider = ({ children }) => {
           !operatorsWithoutQuote.includes(w) &&
           !removeIndex.includes(w) &&
           !stringGetter?.includes(w) &&
-          !quotation.includes(w)
+          !quotation.includes(w) &&
+          !comments.includes(w)
       );
       const distinctOperandsWithoutString = [
         ...new Set(totalOperandsWithoutString),
@@ -253,14 +398,16 @@ export const CalculateProvider = ({ children }) => {
           payload: {
             distinctOperatorsWithoutQuote: distinctOperatorsWithoutQuote,
             totalOperatorsWithoutQuote: operatorsWithoutQuote,
-            stringGetter,
+            stringGetter: stringGetter ? stringGetter : [],
             distinctOperandsWithoutString,
             totalOperandsWithoutString,
             filename,
           },
         });
       }
-    } else if (filename.split(".").pop() === "c++") {
+    }
+    // calculate c++
+    else if (filename.split(".").pop() === "cpp") {
       const operators = [
         "+",
         "++",
@@ -269,6 +416,7 @@ export const CalculateProvider = ({ children }) => {
         "\\n",
         "<=",
         ">=",
+        "<<",
         "\\",
         "^",
         "&lt;",
@@ -277,6 +425,8 @@ export const CalculateProvider = ({ children }) => {
         "&amp;",
         "|",
         "[",
+        "&&",
+        "||",
         ";",
         ":",
         "%d",
@@ -287,9 +437,14 @@ export const CalculateProvider = ({ children }) => {
         "#",
         "<>",
         "(",
+        "==",
         "main",
         "include",
         "stdio.h",
+        "std",
+        "::",
+        "iostream",
+        "conio.h",
         "&",
         "{",
         "%",
@@ -308,6 +463,10 @@ export const CalculateProvider = ({ children }) => {
         "end",
         "while",
         "if",
+        "else",
+        "cout",
+        "cin",
+        "endl",
         "elseif",
         "break",
         "switch",
@@ -320,6 +479,7 @@ export const CalculateProvider = ({ children }) => {
         "immutable",
         "import",
         "importall",
+        "getch",
         "export",
         "type",
         "typealias",
@@ -339,16 +499,20 @@ export const CalculateProvider = ({ children }) => {
         "hpat",
         "@acc",
         "range",
+        "using",
+        "char",
+        "namespace",
       ];
 
       const quotation = ["'", '"'];
-      const removeIndex = [")", "]", "}", "\r", "\n", "\t"];
+      const removeIndex = [")", "]", "}", "\r", "\n", "\t","\\r"];
       const words = tokenize(text);
       // tinh operators
       const operatorsWithoutQuote = words.filter(
         (w) => operators.includes(w) || keywords.includes(w)
       );
       // tinh operands
+      const comments = getComments(text);
       const stringGetter = text
         .match(/"(.*?)"/g)
         ?.map((match) => match.slice(1, -1));
@@ -357,13 +521,14 @@ export const CalculateProvider = ({ children }) => {
           !operatorsWithoutQuote.includes(w) &&
           !removeIndex.includes(w) &&
           !stringGetter?.includes(w) &&
-          !quotation.includes(w)
+          !quotation.includes(w) &&
+          !comments.includes(w)
       );
+      console.log(totalOperandsWithoutString);
       const distinctOperandsWithoutString = [
         ...new Set(totalOperandsWithoutString),
       ];
       const distinctOperatorsWithoutQuote = [...new Set(operatorsWithoutQuote)];
-      console.log(stringGetter);
       if (distinctOperatorsWithoutQuote && operatorsWithoutQuote) {
         dispatch({
           type: "set",

@@ -9,13 +9,14 @@
     display: flex;
     height: 40px;
     background-color: $main-color;
+    justify-content: space-between;
     .left-tab {
-      width: 80%;
+      width: 1100px;
       display: flex;
       overflow: hidden;
       .tab {
-        width: 200px;
-        overflow: hidden;
+        min-width: 200px;
+        max-width: 200px;
         display: flex;
         justify-content: space-between;
         align-items: center;

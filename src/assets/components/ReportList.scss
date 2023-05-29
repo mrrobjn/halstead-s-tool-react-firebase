@@ -3,6 +3,7 @@
   width: 300px;
   height: calc(100vh - 40px);
   background: $main-color;
+  overflow-y: auto;
   .report-list {
     padding: 20px;
     ul {

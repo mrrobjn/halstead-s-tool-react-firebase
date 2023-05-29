@@ -32,7 +32,7 @@ const FileList = () => {
             type="file"
             id="file"
             name="file"
-            accept=".c++, .js"
+            accept=".cpp, .js"
             required
             onChange={(e) => setFile(e)}
           />
