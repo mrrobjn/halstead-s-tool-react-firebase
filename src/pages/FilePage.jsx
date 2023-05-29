@@ -11,7 +11,7 @@ const FilePage = () => {
       <div className="page-body">
         <SideBar />
         <div className="page-container">
-          <div className="file-page-container">
+          <div className="file-page-container">        
             <FileList />
             <FileContent />
           </div>

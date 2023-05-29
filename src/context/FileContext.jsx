@@ -1,7 +1,11 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
+  orderBy,
+  query,
   serverTimestamp,
 } from "firebase/firestore";
 import { createContext, useEffect, useState } from "react";
@@ -15,7 +19,8 @@ export const FileProvider = ({ children }) => {
   useEffect(() => {
     async function getFileData() {
       const fileRef = collection(db, "files");
-      onSnapshot(fileRef, (querySnapshot) => {
+      const q = query(fileRef, orderBy("timestamp", "desc"));
+      onSnapshot(q, (querySnapshot) => {
         const filess = querySnapshot.docs.map((doc) => ({
           data: doc.data(),
           id: doc.id,
@@ -42,12 +47,14 @@ export const FileProvider = ({ children }) => {
         filetype: file.target.files[0].name.split(".").pop(),
         timestamp: serverTimestamp(),
       });
-      console.log("upload thanh cong");
+      console.log("Successfull import");
     } catch (error) {
       console.error(error.message);
     }
   };
-  
+  const deleteFile = async (id) => {
+    await deleteDoc(doc(db, "files", id));
+  };
   return (
     <FileContext.Provider
       value={{
@@ -57,6 +64,7 @@ export const FileProvider = ({ children }) => {
         file,
         setFile,
         fileText,
+        deleteFile,
       }}
     >
       {children}

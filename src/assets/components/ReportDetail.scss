@@ -1,0 +1,40 @@
+@import "../Global.scss";
+.report-detail-container {
+  height: calc(100vh - 40px);
+  width: calc(100vw - 350px);
+  .report-tab-bar {
+    height: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .left-tab {
+      color: $text-color;
+      display: flex;
+      justify-content: space-between;
+      width: 600px;
+      p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+      }
+    }
+    .right-tab {
+      padding-right: 10px;
+      a {
+        padding: 5px 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: $main-border;
+        background-color: $secondary-color;
+        color: $text-color;
+      }
+    }
+  }
+  .report-page {
+    height: calc(100vh - 80px);
+    background: #fff;
+    overflow: hidden;
+  }
+}

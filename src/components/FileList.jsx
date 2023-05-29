@@ -2,10 +2,12 @@ import React, { useContext, useEffect } from "react";
 import "../assets/components/FileList.scss";
 import { FileContext } from "../context/FileContext";
 import { TabBarContext } from "../context/TabBarContext";
+import { CalculateContext } from "../context/CalculateContext";
 const FileList = () => {
-  const { fileText, uploadFile, setFile, file, readFile, fileData } =
+  const { fileText, uploadFile, setFile, file, readFile, fileData,deleteFile } =
     useContext(FileContext);
   const { addTab, changeTab } = useContext(TabBarContext);
+  const { clearResult } = useContext(CalculateContext);
   useEffect(() => {
     file && readFile(file);
   }, [file]);
@@ -15,13 +17,16 @@ const FileList = () => {
   };
   const openFile = (id, filename, filetype) => {
     addTab(id, filename, filetype);
-    changeTab(id,fileData);
+    changeTab(id, fileData);
+    clearResult();
   };
   return (
     <div className="file-list-container">
       <form onSubmit={handleFile}>
         <div className="input-field">
-          <label htmlFor="file">File</label>
+          <label htmlFor="file">
+            <i className="fa-solid fa-upload"></i>
+          </label>
           <span>{file?.target.files[0].name || "File name..."}</span>
           <input
             type="file"
@@ -41,18 +46,21 @@ const FileList = () => {
         <ul>
           {fileData?.map((f) => {
             return (
-              <li
-                key={f.id}
-                onClick={() =>
-                  openFile(f.id, f.data.filename, f.data.filetype)
-                }
-              >
-                {f.data.filetype == "py" ? (
-                  <i className="fa-brands fa-python"></i>
-                ) : (
-                  <i className="fa-brands fa-js"></i>
-                )}
-                {f.data.filename}
+              <li key={f.id}>
+                <div
+                  className="file-name"
+                  onClick={() =>
+                    openFile(f.id, f.data.filename, f.data.filetype)
+                  }
+                >
+                  {f.data.filetype == "py" ? (
+                    <i className="fa-brands fa-python"></i>
+                  ) : (
+                    <i className="fa-brands fa-js"></i>
+                  )}
+                  {f.data.filename}
+                </div>
+                <button type="button" onClick={()=>deleteFile(f.id)}><i className="fa-solid fa-trash"></i></button>
               </li>
             );
           })}

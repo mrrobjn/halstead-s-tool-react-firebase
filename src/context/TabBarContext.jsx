@@ -18,7 +18,7 @@ export const TabBarProvider = ({ children }) => {
     }
     setTab({ type: "change", id });
   };
-  const deleteTab = (id, fileData) => {
+  const deleteTab = (id) => {
     setTab({ type: "remove", id });
     setText("")
   };

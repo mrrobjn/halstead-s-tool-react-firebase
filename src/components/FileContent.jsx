@@ -6,17 +6,20 @@ import ResultTable from "./ResultTable";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import CalculateBtn from "./CalculateBtn";
+import { CalculateContext } from "../context/CalculateContext";
 const FileContent = () => {
-  const { tab, changeTab, deleteTab, text } =
-    useContext(TabBarContext);
+  const { tab, changeTab, deleteTab, text } = useContext(TabBarContext);
   const { fileData } = useContext(FileContext);
-  
+  const { clearResult } = useContext(CalculateContext);
   const handleDeleteTab = (id) => {
-    deleteTab(id, fileData);
+    deleteTab(id);
+    clearResult();
   };
   const handleChangeTab = (id) => {
     changeTab(id, fileData);
+    clearResult();
   };
+  const currentTab = tab?.find((t) => t.active === true);
   return (
     <div className="file-content-container">
       <div className="tab-bar">
@@ -44,7 +47,7 @@ const FileContent = () => {
           })}
         </div>
         <div className="right-tab">
-        <CalculateBtn/>
+          <CalculateBtn tab={tab} />
         </div>
       </div>
       <div className="content-container">
@@ -54,11 +57,11 @@ const FileContent = () => {
         >
           {tab.length !== 0 && text && (
             <SyntaxHighlighter
-              language="javascript"
+              language={currentTab?.filetype === "js" ? "javascript" : "cpp"}
               style={atomOneDark}
-              customStyle={{ paddingTop: 20}}
+              customStyle={{ paddingTop: 20 }}
               showLineNumbers={true}
-              >
+            >
               {text}
             </SyntaxHighlighter>
           )}

@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { CalculateContext } from "../context/CalculateContext";
 import "../assets/components/ResultTable.scss";
+import { ReportContext } from "../context/ReportContext";
 const ResultTable = () => {
   const { state } = useContext(CalculateContext);
+  const { saveReport } = useContext(ReportContext);
   return (
     <div className="result-container">
       {state?.distinctOperatorsWithoutQuote.length > 0 && (
@@ -70,6 +72,15 @@ const ResultTable = () => {
             </table>
           </div>
         </>
+      )}
+      {state.distinctOperandsWithoutString.length > 0 && (
+        <button
+          type="button"
+          className="report-save-btn"
+          onClick={() => saveReport(state)}
+        >
+          Save
+        </button>
       )}
     </div>
   );

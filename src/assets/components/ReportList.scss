@@ -1,0 +1,53 @@
+@import "../Global.scss";
+.report-list-container {
+  width: 300px;
+  height: calc(100vh - 40px);
+  background: $main-color;
+  .report-list {
+    padding: 20px;
+    ul {
+      li {
+        color: $text-color;
+        background: $secondary-color;
+        border-radius: $main-border;
+        margin-bottom: 10px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+        cursor: pointer;
+        .report-detail{
+            display: flex;
+            align-items: center;
+            .logo{
+                padding-right: 10px;
+            }
+            .report-info{
+                max-width: 150px;
+                p{
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+        button{
+            cursor: pointer;
+            padding: 8px;
+            border-radius: $main-border;
+            border: none;
+            background:transparent;
+            color: $text-color;
+            transition: 0.4s;
+            display: none;
+            &:hover{
+                background-color: $main-color;
+            }
+        }
+        &:hover button{
+          display: block;
+        }
+      }
+    }
+  }
+}
