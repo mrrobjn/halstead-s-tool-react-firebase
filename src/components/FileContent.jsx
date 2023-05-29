@@ -32,10 +32,10 @@ const FileContent = () => {
                 key={t.id}
               >
                 <p onClick={() => handleChangeTab(t.id)}>
-                  {t.filetype == "py" ? (
-                    <i className="fa-brands fa-python"></i>
-                  ) : (
-                    <i className="fa-brands fa-js"></i>
+                  {t.filetype == "js" ? (
+                 <img src="/img/js.png" alt="" srcset="" />
+                 ) : (
+                 <img src="/img/c-.png" alt="" srcset="" />
                   )}
                   {t.filename}
                 </p>

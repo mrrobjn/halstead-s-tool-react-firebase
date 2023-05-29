@@ -28,8 +28,10 @@
           display: flex;
           max-width: 150px;
           overflow: hidden;
-          i {
-            padding-right: 10px;
+          img{
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
           }
         }
         button {

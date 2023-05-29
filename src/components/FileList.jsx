@@ -53,10 +53,10 @@ const FileList = () => {
                     openFile(f.id, f.data.filename, f.data.filetype)
                   }
                 >
-                  {f.data.filetype == "py" ? (
-                    <i className="fa-brands fa-python"></i>
-                  ) : (
-                    <i className="fa-brands fa-js"></i>
+                  {f.data.filetype == "js" ? (
+                      <img src="/img/js.png" alt="" srcset="" />
+                      ) : (
+                      <img src="/img/c-.png" alt="" srcset="" />
                   )}
                   {f.data.filename}
                 </div>
