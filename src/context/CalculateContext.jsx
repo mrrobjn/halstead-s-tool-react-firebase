@@ -17,12 +17,16 @@ export const CalculateProvider = ({ children }) => {
     let currentToken = "";
     for (let i = 0; i < code.length; i++) {
       const char = code[i];
+      // Check for whitespace characters
       if (char === " " || char === "\n" || char === "\t") {
+        // If there is a current token, push it to the tokens array and reset currentToken
         if (currentToken.length > 0) {
           tokens.push(currentToken);
           currentToken = "";
         }
-      } else if (
+      } 
+      // Check for single-character operators and delimiters
+      else if (
         char === "(" ||
         char === ")" ||
         char === "{" ||
@@ -36,83 +40,119 @@ export const CalculateProvider = ({ children }) => {
         (char === "=" && code[i + 1] !== "=") || // modified this line to only check for a single "=" character
         (char === "<" && code[i + 1] !== "<" && code[i + 1] !== "=") ||
         (char === ">" && code[i + 1] !== ">") ||
-        char === "+" ||
+        (char === "+" && code[i + 1] !== "+") || // modified this line to only check for a single "+" character
         char === "#" ||
         (char === ":" && code[i + 1] !== ":")
       ) {
+        // If there is a current token, push it to the tokens array and reset currentToken
         if (currentToken.length > 0) {
           tokens.push(currentToken);
           currentToken = "";
         }
+        // Push the current character as a separate token
         tokens.push(char);
-      } else if (
-         (char == "<" && code[i+1] == "<") || 
-         (char == ">" && code[i+1] == ">") || 
-         (char == ":" && code[i+1] == ":") || 
-         (char == "!" && code[i+1] == "=") || 
-         (char == "=" && code[i+1] == "=") || 
-         (char == "<" && code[i+1] == "=") || 
-         (char == ">" && code[i+1] == "=")
-       ) {
-         if(currentToken.length>0){
-           tokens.push(currentToken);
-           currentToken="";
-         }
-         tokens.push(char+code[i+1]);
-         i++;
-       } else if (char == "+" && code[i+1]=="+"){
-         if(currentToken.length>0){
-           tokens.push(currentToken);
-           currentToken="";
-         }
-         tokens.push("++");
-         i++;
-       }else if(char=='"'||char=="'"){
-         if(currentToken.length>0){
-           tokens.push(currentToken);
-           currentToken="";
-         }
-         tokens.push(char);
-         let endChar=i+1;
-         while(endChar<code.length&&code[endChar]!=char){
-           endChar++;
-         }
-         tokens.push(code.slice(i+1,endChar));
-         tokens.push(char);
-         i=endChar;
-       }else if(
-         currentToken.endsWith("#include")&&
-         char=="<"
-       ){
-         let endChar=i;
-         while(endChar<code.length&&code[endChar]!=">"){
-           endChar++;
-         }
-         currentToken+=code.slice(i,endChar+1);
-         i=endChar;
-       }else if(char=="/"&&code[i+1]=="/"){
-         if(currentToken.length>0){
-           tokens.push(currentToken);
-           currentToken="";
-         }
-         let endComment=i+2;
-         while(endComment<code.length&&code[endComment]!='\n'&&code[endComment]!='\r'){
-           endComment++;
-         }
-         tokens.push(code.slice(i,endComment));
-         i=endComment;
-       }else if(char=="\\"&&(code[i+1]=="n"||code[i+1]=="r"||code[i+1]=="t")){
-          currentToken+=char+code[i+1];
-          i++;
-       }else{
-         currentToken+=char;
+      } 
+      // Check for multi-character operators
+      else if (
+        (char == "<" && code[i + 1] == "<") ||
+        (char == ">" && code[i + 1] == ">") ||
+        (char == ":" && code[i + 1] == ":") ||
+        (char == "!" && code[i + 1] == "=") ||
+        (char == "=" && code[i + 1] == "=") ||
+        (char == "<" && code[i + 1] == "=") ||
+        (char == ">" && code[i + 1] == "=") ||
+        (char == "+" && code[i + 1] == "+") ||
+        (char == "-" && code[i + 1] == "-") ||
+        (char == "&" && code[i + 1] == "&") ||
+        (char == "|" && code[i + 1] == "|")
+        // added this line to check for "++"
+      ) {
+        // If there is a current token, push it to the tokens array and reset currentToken
+        if (currentToken.length > 0) {
+          tokens.push(currentToken);
+          currentToken = "";
+        }
+        // Push the two-character operator as a single token
+        tokens.push(char + code[i + 1]);
+        // Increment the loop counter by 1 to skip over the next character
+        i++;
+      } 
+      // Check for string literals
+      else if (char == '"' || char == "'") {
+          // If there is a current token, push it to the tokens array and reset currentToken
+          if (currentToken.length > 0) {
+            tokens.push(currentToken);
+            currentToken = "";
+          }
+          // Push the opening quote as a separate token
+          tokens.push(char);
+          // Find the position of the closing quote
+          let endChar = i + 1;
+          while (endChar < code.length && code[endChar] != char) {
+            endChar++;
+          }
+          // Push the contents of the string literal as a separate token
+          tokens.push(code.slice(i + 1, endChar));
+          // Push the closing quote as a separate token
+          tokens.push(char);
+          // Set the loop counter to the position of the closing quote
+          i = endChar;
+      } 
+      // Check for #include statements
+      else if (currentToken.endsWith("#include") && char == "<") {
+          // Find the position of the closing angle bracket
+          let endChar = i;
+          while (endChar < code.length && code[endChar] != ">") {
+            endChar++;
+          }
+          // Add everything between the opening and closing angle brackets to currentToken
+          currentToken += code.slice(i, endChar + 1);
+          // Set the loop counter to the position of the closing angle bracket
+          i = endChar;
+      } 
+      // Check for single-line comments
+      else if (char == "/" && code[i + 1] == "/") {
+          // If there is a current token, push it to the tokens array and reset currentToken
+          if (currentToken.length > 0) {
+            tokens.push(currentToken);
+            currentToken = "";
+          }
+          // Find the position of the end of the comment
+          let endComment = i + 2;
+          while (
+            endComment < code.length &&
+            code[endComment] != "\n" &&
+            code[endComment] != "\r"
+          ) {
+            endComment++;
+          }
+          // Push everything between the start and end of the comment as a separate token
+          tokens.push(code.slice(i, endComment));
+          // Set the loop counter to the position of the end of the comment
+          i = endComment;
+      } 
+      // Check for escape sequences in string literals
+      else if (
+        char == "\\" &&
+        (code[i + 1] == "n" || code[i + 1] == "r" || code[i + 1] == "t")
+      ) {
+        // Add both characters of the escape sequence to currentToken
+        currentToken += char + code[i + 1];
+        // Increment the loop counter by 1 to skip over the next character
+        i++;
+      } 
+      else {
+         // Add any other character to currentToken
+         currentToken += char;
        }
      }
-     if(currentToken.length>0){
+     if (currentToken.length > 0) {
        tokens.push(currentToken);
      }
      return tokens;
   }
+  
+  
   // render comment in array
   function getComments(code) {
     const comments = [];
@@ -505,8 +545,10 @@ export const CalculateProvider = ({ children }) => {
       ];
 
       const quotation = ["'", '"'];
-      const removeIndex = [")", "]", "}", "\r", "\n", "\t","\\r"];
+      const removeIndex = [")", "]", "}", "\r", "\n", "\t", "\\r"];
       const words = tokenize(text);
+      console.log(words);
+
       // tinh operators
       const operatorsWithoutQuote = words.filter(
         (w) => operators.includes(w) || keywords.includes(w)
@@ -524,7 +566,6 @@ export const CalculateProvider = ({ children }) => {
           !quotation.includes(w) &&
           !comments.includes(w)
       );
-      console.log(totalOperandsWithoutString);
       const distinctOperandsWithoutString = [
         ...new Set(totalOperandsWithoutString),
       ];
