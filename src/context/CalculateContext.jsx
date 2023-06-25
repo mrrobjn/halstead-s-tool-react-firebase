@@ -547,8 +547,7 @@ export const CalculateProvider = ({ children }) => {
       const quotation = ["'", '"'];
       const removeIndex = [")", "]", "}", "\r", "\n", "\t", "\\r"];
       const words = tokenize(text);
-      console.log(words);
-
+      
       // tinh operators
       const operatorsWithoutQuote = words.filter(
         (w) => operators.includes(w) || keywords.includes(w)
