@@ -2,7 +2,7 @@ import React, { useReducer } from "react";
 import "../assets/pages/ReportPage.scss";
 import Header from "../layout/Header";
 import SideBar from "../layout/SideBar";
-import ReportList from "../components/Reportlist";
+import ReportList from "../components/ReportList";
 import ReportDetail from "../components/ReportDetail";
 import { ReportInitalState, ReportReducer } from "../reducer/ReportReducer";
 const ReportPage = () => {
